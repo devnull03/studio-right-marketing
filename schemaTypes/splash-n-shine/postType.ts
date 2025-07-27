@@ -27,6 +27,12 @@ export const postType = defineType({
       type: 'image',
     }),
     defineField({
+      name: 'min_read',
+      type: 'number',
+      description: 'Estimated minimum reading time in minutes',
+      validation: (rule) => rule.min(1).max(60),
+    }),
+    defineField({
       name: 'body',
       type: 'array',
       of: [{ type: 'block' }],
