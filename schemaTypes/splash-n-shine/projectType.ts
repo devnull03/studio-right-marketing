@@ -146,12 +146,6 @@ export const projectType = defineType({
       of: [{ type: 'string' }],
     }),
     defineField({
-      name: 'testimonial',
-      type: 'reference',
-      title: 'Client Testimonial',
-      to: { type: 'testimonial' },
-    }),
-    defineField({
       name: 'featured',
       type: 'boolean',
       title: 'Featured Project',

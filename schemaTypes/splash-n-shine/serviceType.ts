@@ -49,12 +49,6 @@ export const serviceType = defineType({
 			of: [{ type: 'string' }],
 		}),
 		defineField({
-			name: 'cities',
-			type: 'array',
-			title: 'Cities',
-			of: [{ type: 'reference', to: { type: 'location' } }],
-		}),
-		defineField({
 			name: 'faqItems',
 			type: 'array',
 			title: 'FAQ Items',
