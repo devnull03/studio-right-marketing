@@ -27,12 +27,6 @@ export const postType = defineType({
       type: 'image',
     }),
     defineField({
-      name: 'min_read',
-      type: 'number',
-      description: 'Estimated minimum reading time in minutes',
-      validation: (rule) => rule.min(1).max(60),
-    }),
-    defineField({
       name: 'body',
       type: 'array',
       of: [{ type: 'block' }],
@@ -41,6 +35,33 @@ export const postType = defineType({
       name: 'categories',
       type: 'array',
       of: [{ type: 'string' }]
+    }),
+    defineField({
+      name: 'previewDescription',
+      type: 'text',
+      description: 'Short description for previews and meta descriptions',
+      validation: (rule) => rule.max(160),
+    }),
+    defineField({
+      name: 'readTime',
+      type: 'number',
+      description: 'Calculated reading time in minutes',
+      validation: (rule) => rule.min(1).max(60),
+    }),
+    defineField({
+      name: 'seoKeywords',
+      type: 'array',
+      of: [{ type: 'string' }],
+      description: 'SEO keywords for this post',
+    }),
+    defineField({
+      name: 'postType',
+      type: 'string',
+      options: {
+        list: [
+          'Article', 'BlogPosting', 'NewsArticle', 'Guide'
+        ],
+      }
     }),
   ],
 })
