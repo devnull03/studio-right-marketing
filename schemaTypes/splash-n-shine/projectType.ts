@@ -1,8 +1,8 @@
 import { defineField, defineType } from 'sanity'
 
 export const projectType = defineType({
-  name: 'project',
-  title: 'Project',
+  name: 'splashNShineProject',
+  title: 'Splash n Shine Project',
   type: 'document',
   fields: [
     defineField({
@@ -15,14 +15,18 @@ export const projectType = defineType({
       name: 'slug',
       type: 'slug',
       title: 'Slug',
-      options: { source: 'title' },
+      options: { 
+        source: 'title',
+        maxLength: 96,
+      },
       validation: (rule) => rule.required(),
     }),
     defineField({
       name: 'description',
       type: 'text',
-      title: 'Project Description',
-      validation: (rule) => rule.required(),
+      title: 'Short Description',
+      rows: 3,
+      validation: (rule) => rule.required().max(200),
     }),
     defineField({
       name: 'longDescription',
@@ -37,25 +41,91 @@ export const projectType = defineType({
       options: {
         hotspot: true,
       },
+      fields: [
+        defineField({
+          name: 'alt',
+          type: 'string',
+          title: 'Alternative Text',
+          validation: (rule) => rule.required(),
+        }),
+        defineField({
+          name: 'caption',
+          type: 'string',
+          title: 'Caption',
+        }),
+      ],
       validation: (rule) => rule.required(),
     }),
     defineField({
       name: 'gallery',
       type: 'array',
       title: 'Project Gallery',
-      of: [{ type: 'image', options: { hotspot: true } }],
+      of: [
+        {
+          type: 'image',
+          options: { hotspot: true },
+          fields: [
+            defineField({
+              name: 'alt',
+              type: 'string',
+              title: 'Alternative Text',
+              validation: (rule) => rule.required(),
+            }),
+            defineField({
+              name: 'caption',
+              type: 'string',
+              title: 'Caption',
+            }),
+            defineField({
+              name: 'isVideo',
+              type: 'boolean',
+              title: 'Is this a video thumbnail?',
+              initialValue: false,
+            }),
+            defineField({
+              name: 'videoUrl',
+              type: 'url',
+              title: 'Video URL (if video)',
+              hidden: ({ parent }) => !parent?.isVideo,
+            }),
+          ],
+        },
+      ],
+      options: {
+        layout: 'grid',
+      },
     }),
     defineField({
       name: 'services',
       type: 'array',
-      title: 'Services Used',
+      title: 'Services Provided',
       of: [{ type: 'reference', to: { type: 'service' } }],
+      validation: (rule) => rule.required().min(1),
     }),
     defineField({
       name: 'location',
       type: 'reference',
       title: 'Project Location',
       to: { type: 'location' },
+    }),
+    defineField({
+      name: 'categories',
+      type: 'array',
+      title: 'Gallery Categories',
+      of: [{ type: 'string' }],
+      options: {
+        list: [
+          { title: 'Residential', value: 'residential' },
+          { title: 'Commercial', value: 'commercial' },
+          { title: 'Industrial', value: 'industrial' },
+          { title: 'Before & After', value: 'before-after' },
+          { title: 'Pressure Washing', value: 'pressure-washing' },
+          { title: 'Window Cleaning', value: 'window-cleaning' },
+          { title: 'Roof Cleaning', value: 'roof-cleaning' },
+          { title: 'Concrete Cleaning', value: 'concrete-cleaning' },
+        ],
+      },
+      description: 'Categorize this project for gallery filtering',
     }),
     defineField({
       name: 'client',
@@ -84,6 +154,7 @@ export const projectType = defineType({
           type: 'boolean',
           title: 'Show Client Name Publicly',
           initialValue: false,
+          description: 'Whether to display client name on public pages',
         }),
       ],
     }),
@@ -112,6 +183,11 @@ export const projectType = defineType({
           type: 'number',
           title: 'Square Footage',
         }),
+        defineField({
+          name: 'crew',
+          type: 'number',
+          title: 'Crew Size',
+        }),
       ],
     }),
     defineField({
@@ -123,13 +199,39 @@ export const projectType = defineType({
           name: 'before',
           type: 'array',
           title: 'Before Images',
-          of: [{ type: 'image', options: { hotspot: true } }],
+          of: [
+            {
+              type: 'image',
+              options: { hotspot: true },
+              fields: [
+                defineField({
+                  name: 'alt',
+                  type: 'string',
+                  title: 'Alternative Text',
+                  validation: (rule) => rule.required(),
+                }),
+              ],
+            },
+          ],
         }),
         defineField({
           name: 'after',
           type: 'array',
           title: 'After Images',
-          of: [{ type: 'image', options: { hotspot: true } }],
+          of: [
+            {
+              type: 'image',
+              options: { hotspot: true },
+              fields: [
+                defineField({
+                  name: 'alt',
+                  type: 'string',
+                  title: 'Alternative Text',
+                  validation: (rule) => rule.required(),
+                }),
+              ],
+            },
+          ],
         }),
       ],
     }),
@@ -142,7 +244,13 @@ export const projectType = defineType({
     defineField({
       name: 'solutions',
       type: 'array',
-      title: 'Solutions Implemented',
+      title: 'Solutions Applied',
+      of: [{ type: 'string' }],
+    }),
+    defineField({
+      name: 'results',
+      type: 'array',
+      title: 'Results Achieved',
       of: [{ type: 'string' }],
     }),
     defineField({
@@ -150,6 +258,7 @@ export const projectType = defineType({
       type: 'boolean',
       title: 'Featured Project',
       initialValue: false,
+      description: 'Featured projects appear on homepage and top of gallery',
     }),
     defineField({
       name: 'status',
@@ -167,15 +276,32 @@ export const projectType = defineType({
     defineField({
       name: 'publishedAt',
       type: 'datetime',
-      title: 'Published At',
-      initialValue: () => new Date().toISOString(),
+      title: 'Published Date',
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: 'seoKeywords',
+      type: 'array',
+      title: 'SEO Keywords',
+      of: [{ type: 'string' }],
+      description: 'Keywords for search engine optimization',
     }),
   ],
   preview: {
     select: {
       title: 'title',
-      subtitle: 'client.name',
       media: 'featuredImage',
+      status: 'status',
+      featured: 'featured',
+      clientName: 'client.name',
+    },
+    prepare(selection) {
+      const { title, media, status, featured, clientName } = selection
+      return {
+        title: title,
+        media: media,
+        subtitle: `${status}${featured ? ' • Featured' : ''}${clientName ? ` • ${clientName}` : ''}`,
+      }
     },
   },
 })

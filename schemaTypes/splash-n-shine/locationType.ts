@@ -8,15 +8,24 @@ export const locationType = defineType({
     defineField({
       name: 'name',
       type: 'string',
-      title: 'Name',
+      title: 'City Name',
       validation: (rule) => rule.required(),
     }),
     defineField({
       name: 'slug',
       type: 'slug',
       title: 'Slug',
-      options: { source: 'name' },
+      options: { 
+        source: 'name',
+        maxLength: 96,
+      },
       validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: 'province',
+      type: 'string',
+      title: 'Province',
+      initialValue: 'BC',
     }),
     defineField({
       name: 'faqItems',
