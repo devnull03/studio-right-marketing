@@ -12,14 +12,17 @@ export const asset = defineType({
 			validation: (r) => r.required(),
 		}),
 		defineField({
-			name: 'file',
-			type: 'file',
-			title: 'File',
-			description: 'Upload the asset file here',
-			options: {
-				accept: 'image/*,video/*,application/pdf',
-				storeOriginalFilename: true,
-			},
+			name: 'files',
+			type: 'array',
+			title: 'Files',
+			description: 'Upload the asset files here',
+			of: [{ 
+				type: 'file',
+				options: {
+					accept: 'image/*,video/*,application/pdf',
+					storeOriginalFilename: true,
+				}
+			}],
 			validation: (r) => r.required(),
 		}),
 		defineField({
